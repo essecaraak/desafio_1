@@ -1,6 +1,8 @@
 import { Container,Content } from "./styles";
 import Input from "./components/Input";
 import Button from "./components/Button";
+import ButtonFiller from "./components/ButtonFiller";
+
 import { Column } from "./styles";
 import { Row} from "./styles";
 import { useState } from "react";
@@ -11,6 +13,9 @@ const App = () =>{
   const [operation,setOperation] = useState('');
 
   const handleAddNumber = (number) =>{
+    if(currentNumber.includes('.') && number === '.'){
+      return;
+    }
     setCurrentNumber(prev=>`${prev === '0' ? '': prev}${number}`)
   }
   const handleOnClear = () =>{
@@ -38,10 +43,43 @@ const App = () =>{
       setCurrentNumber('0');
       setOperation('-');
     }else{
-      const sum = Number(firstNumber)- Number(currentNumber);
-      setCurrentNumber(String(sum));
+      const sub = Number(firstNumber)- Number(currentNumber);
+      setCurrentNumber(String(sub));
       setOperation('');
       setFirstNumber('0');
+    }
+  }
+
+  const handleMultiplyNumbers = () =>{
+    if(firstNumber ==='0'){
+      setFirstNumber(currentNumber);
+      setCurrentNumber('0');
+      setOperation('x');
+    }else{
+      const mul = Number(firstNumber)* Number(currentNumber);
+      setCurrentNumber(String(mul));
+      setOperation('');
+      setFirstNumber('0');
+    }
+  }
+  const handleDivideNumbers = () =>{
+    if(firstNumber ==='0'){
+      if(currentNumber!=='0'){
+        setFirstNumber(currentNumber);
+        setCurrentNumber('0');
+        setOperation('/');
+      }else{ return}
+
+    }else{
+      if(currentNumber==='0'){
+       handleOnClear();
+      }else{
+        const mul = Number(firstNumber)/ Number(currentNumber);
+        setCurrentNumber(String(mul));
+        setOperation('');
+        setFirstNumber('0');
+      }
+      
     }
   }
   const handleEquals= () =>{
@@ -52,6 +90,12 @@ const App = () =>{
           break;
         case '-':
           handleMinusNumbers();
+          break;
+        case 'x':
+          handleMultiplyNumbers();
+          break;
+        case '/':
+          handleDivideNumbers();
           break;
         default:
           break;
@@ -66,10 +110,10 @@ const App = () =>{
       <Content>
         <Input value={currentNumber}/>
         <Row>
-          <Button label="x" onClick={()=>handleAddNumber('7')}/>
-          <Button label="/" onClick={()=>handleAddNumber('7')}/>
+          <Button label="x" onClick={()=>handleMultiplyNumbers()}/>
+          <Button label="/" onClick={()=>handleDivideNumbers()}/>
           <Button label="c" onClick={()=>handleOnClear()}/>
-          <Button label="X" onClick={()=>handleAddNumber('7')}/>
+          <Button label="." onClick={()=>handleAddNumber('.')}/>
         </Row>
         <Row>
           <Button label="7" onClick={()=>handleAddNumber('7')}/>
@@ -88,6 +132,12 @@ const App = () =>{
           <Button label="2" onClick={()=>handleAddNumber('2')}/>
           <Button label="3" onClick={()=>handleAddNumber('3')}/>
           <Button label="=" onClick={()=>handleEquals()}/>
+        </Row>
+        <Row>
+          <ButtonFiller style={{ flex: 1 }} />
+          <Button label="0" onClick={()=>handleAddNumber('0')}/>
+          <ButtonFiller style={{ flex: 1 }} />
+          <ButtonFiller style={{ flex: 1 }} />
         </Row>
         
       </Content>
